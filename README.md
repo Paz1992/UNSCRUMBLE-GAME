@@ -117,23 +117,7 @@
             100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
         }
 
-        /* Modal styling */
-        .modal {
-            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
-        }
-        .modal-content {
-            padding: 3rem; /* More padding */
-            border-radius: 1.5rem; /* More rounded corners */
-            animation: pop-in 0.5s ease-out forwards; /* Pop-in animation for modal */
-        }
-        #modalMessage {
-            font-family: 'Fredoka One', cursive;
-            font-size: 2rem; /* Larger modal message */
-            color: #374151;
-        }
-        #modalConfirmBtn {
-            font-size: 1.25rem; /* Larger modal button */
-        }
+        /* Modal styling (removed) */
 
         /* Emoji display */
         #verbEmoji {
@@ -185,12 +169,7 @@
         <button id="nextButton" class="w-full text-white font-bold py-3 px-4 shadow-md opacity-50 cursor-not-allowed" disabled>Siguiente</button>
     </div>
 
-    <div id="modal" class="modal fixed inset-0 bg-black bg-opacity-50">
-        <div class="modal-content bg-white p-8 rounded-lg shadow-xl text-center">
-            <p id="modalMessage" class="text-lg mb-6"></p>
-            <button id="modalConfirmBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg">¡Entendido!</button>
-        </div>
-    </div>
+    <!-- Modal HTML removed -->
 
     <script>
         // Array of game data: word, scrambled version, and emoji character
@@ -217,11 +196,8 @@
             feedbackMessage: document.getElementById('feedbackMessage'),
             checkButton: document.getElementById('checkButton'),
             nextButton: document.getElementById('nextButton'),
-            resetButton: document.getElementById('resetButton'),
-            modal: document.getElementById('modal'),
-            modalMessage: document.getElementById('modalMessage'),
-            modalConfirmBtn: document.getElementById('modalConfirmBtn')
-            // imageLoadingSpinner and related logic removed
+            resetButton: document.getElementById('resetButton')
+            // Modal related elements removed
         };
 
         /**
@@ -383,8 +359,13 @@
             const enteredWord = lettersState.destination.join('');
             // Check if all slots are filled
             if (enteredWord.length !== verbs[currentVerbIndex].word.length) {
-                showModal("¡Por favor, completa la palabra!"); // Custom modal for incomplete word
-                return;
+                // Display message directly in feedback area
+                resetFeedback();
+                const feedback = DOMElements.feedbackMessage;
+                feedback.textContent = "¡Por favor, completa la palabra!";
+                feedback.classList.add('text-yellow-600', 'animate-pop'); // Use a warning color
+                feedback.classList.remove('opacity-0');
+                return; // Still return to prevent further checks
             }
 
             if (enteredWord === verbs[currentVerbIndex].word) {
@@ -455,47 +436,26 @@
             DOMElements.nextButton.disabled = true;
             DOMElements.nextButton.classList.add('opacity-50', 'cursor-not-allowed');
             DOMElements.nextButton.classList.remove('animate-pulse');
-            DOMElements.resetButton.disabled = false; // Allow restarting the game from the modal
+            DOMElements.resetButton.disabled = false; // Allow restarting the game
 
-            showModal(`¡Juego Completado! Tu puntuación final es: ${score} puntos.`, true); // Pass true for game completion
-        }
-
-        /**
-         * Displays a custom modal with a message.
-         * @param {string} message - The message to display in the modal.
-         * @param {boolean} [isGameCompleted=false] - True if the modal is for game completion, changes button text.
-         */
-        function showModal(message, isGameCompleted = false) {
-            DOMElements.modalMessage.textContent = message;
-            DOMElements.modal.classList.add('active'); // Show the modal
-            if (isGameCompleted) {
-                DOMElements.modalConfirmBtn.textContent = "Volver a Jugar"; // Change button text for game over
-                DOMElements.modalConfirmBtn.onclick = () => {
-                    DOMElements.modal.classList.remove('active'); // Hide modal
-                    currentVerbIndex = 0; // Reset index to start a new game
-                    score = 0; // Reset score for a new game
-                    initializeGame(); // Re-initialize the game
-                };
-            } else {
-                DOMElements.modalConfirmBtn.textContent = "¡Entendido!"; // Default button text
-                DOMElements.modalConfirmBtn.onclick = () => {
-                    DOMElements.modal.classList.remove('active'); // Hide modal
-                };
-            }
+            // Display final score directly in feedback area
+            resetFeedback();
+            const feedback = DOMElements.feedbackMessage;
+            feedback.textContent = `¡Juego Completado! Tu puntuación final es: ${score} puntos.`;
+            feedback.classList.add('text-blue-700', 'animate-pop'); // Use a completion color
+            feedback.classList.remove('opacity-0');
         }
 
         // --- Event Listeners ---
-        // Confirm button in modal to close it
-        DOMElements.modalConfirmBtn.addEventListener('click', () => {
-            DOMElements.modal.classList.remove('active');
-        });
         // Check button to verify the answer
         DOMElements.checkButton.addEventListener('click', checkAnswer);
         // Next button to load the next verb
         DOMElements.nextButton.addEventListener('click', nextVerb);
-        // Reset button to restart the current word
+        // Reset button to restart the game
         DOMElements.resetButton.addEventListener('click', () => {
-            initializeGame(); // Re-initialize the current game state
+            currentVerbIndex = 0; // Reset to the first verb
+            score = 0;           // Reset score
+            initializeGame();    // Start a new game from scratch
         });
 
         // Start the game when the window loads
@@ -503,3 +463,4 @@
     </script>
 </body>
 </html>
+

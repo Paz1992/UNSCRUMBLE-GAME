@@ -1,12 +1,12 @@
 <html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego: Unscramble the Verb</title>
+    <title>Game: Unscramble the Word</title>
     <!-- Chosen Palette: Warm Harmony - A calming palette using a light neutral background (#F0F2F5), white content areas, a soft blue (#88A0B2) for primary interactive elements, and subtle, harmonious accent colors for feedback and controls. -->
-    <!-- Application Structure Plan: The application is designed as a single-view game interface to maintain user focus. The structure is vertical: Title, Score, Image Hint, Scrambled Letters, Answer Slots, Feedback, and Controls. This linear flow guides the user from the puzzle (image/letters) to the interaction area (slots) and finally to the action buttons (check/next). This was chosen for its simplicity and intuitive nature, making the game immediately understandable without instructions. -->
-    <!-- Visualization & Content Choices: Report Info: Verbs list (word, scrambled, emoji). Goal: Teach verbs. Viz/Presentation: Interactive HTML blocks for letters/slots. Interaction: Click-to-move letters for simplicity. Justification: This direct manipulation is intuitive on both desktop and touch devices. Data (verbs) is stored in a JS array for easy management. Feedback is multi-sensory (color, text, sound, animation) to reinforce learning. Library/Method: Vanilla JS for all logic, Tailwind CSS for styling. -->
+    <!-- Application Structure Plan: The application is designed as a single-view game interface to maintain user focus. The structure is vertical: Title, Score, Emoji Hint, Scrambled Letters, Answer Slots, Feedback, and Controls. This linear flow guides the user from the puzzle (emoji/letters) to the interaction area (slots) and finally to the action buttons (check/next). This was chosen for its simplicity and intuitive nature, making the game immediately understandable without instructions. -->
+    <!-- Visualization & Content Choices: Report Info: Verbs list (word, scrambled, emoji). Goal: Teach words. Viz/Presentation: Interactive HTML blocks for letters/slots. Interaction: Click-to-move letters for simplicity. Justification: This direct manipulation is intuitive on both desktop and touch devices. Data (verbs) is stored in a JS array for easy management. Feedback is multi-sensory (color, text, sound, animation) to reinforce learning. Library/Method: Vanilla JS for all logic, Tailwind CSS for styling. -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -117,8 +117,6 @@
             100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
         }
 
-        /* Modal styling (removed) */
-
         /* Emoji display */
         #verbEmoji {
             font-size: 8rem; /* Large emoji size */
@@ -142,18 +140,18 @@
 <body class="flex items-center justify-center min-h-screen p-4">
 
     <div id="game-container" class="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl max-w-md w-full flex flex-col items-center gap-5">
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 text-center">¡A Formar Verbos!</h1>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 text-center">Unscramble the Word!</h1>
         
         <div class="text-2xl font-bold text-gray-700 bg-gray-100 px-4 py-2 rounded-full shadow-inner">
-            Puntuación: <span id="scoreDisplay">0</span>
+            Score: <span id="scoreDisplay">0</span>
         </div>
 
         <!-- Emoji hint container -->
         <div class="emoji-container w-full h-48 bg-blue-100 rounded-lg overflow-hidden shadow-inner flex items-center justify-center">
-            <span id="verbEmoji" role="img" aria-label="Pista visual del verbo"></span>
+            <span id="verbEmoji" role="img" aria-label="Visual hint for the word"></span>
         </div>
 
-        <p class="text-gray-600 text-center text-lg">Arrastra y suelta las letras para formar la palabra.</p>
+        <p class="text-gray-600 text-center text-lg">Drag and drop the letters to form the correct word.</p>
 
         <div id="wordSlots" class="flex flex-wrap justify-center gap-2 sm:gap-3 p-2 min-h-[70px] w-full"></div>
         <div id="scrambledLetters" class="flex flex-wrap justify-center gap-2 sm:gap-3 p-3 bg-blue-50 rounded-lg w-full min-h-[70px]"></div>
@@ -163,13 +161,11 @@
         </div>
 
         <div class="flex flex-col sm:flex-row gap-4 mt-2 w-full">
-            <button id="resetButton" class="w-full sm:w-auto flex-1 text-white font-bold py-3 px-4 shadow-md">Reiniciar</button>
-            <button id="checkButton" class="w-full sm:w-auto flex-1 text-white font-bold py-3 px-4 shadow-md">Comprobar</button>
+            <button id="resetButton" class="w-full sm:w-auto flex-1 text-white font-bold py-3 px-4 shadow-md">Reset</button>
+            <button id="checkButton" class="w-full sm:w-auto flex-1 text-white font-bold py-3 px-4 shadow-md">Check</button>
         </div>
-        <button id="nextButton" class="w-full text-white font-bold py-3 px-4 shadow-md opacity-50 cursor-not-allowed" disabled>Siguiente</button>
+        <button id="nextButton" class="w-full text-white font-bold py-3 px-4 shadow-md opacity-50 cursor-not-allowed" disabled>Next</button>
     </div>
-
-    <!-- Modal HTML removed -->
 
     <script>
         // Array of game data: word, scrambled version, and emoji character
@@ -197,7 +193,6 @@
             checkButton: document.getElementById('checkButton'),
             nextButton: document.getElementById('nextButton'),
             resetButton: document.getElementById('resetButton')
-            // Modal related elements removed
         };
 
         /**
@@ -272,7 +267,7 @@
             lettersState.destination = Array(verbData.word.length).fill(null);
             
             DOMElements.verbEmoji.textContent = verbData.emoji; // Set emoji directly
-            DOMElements.verbEmoji.setAttribute('aria-label', `Pista visual del verbo: ${verbData.word}`); // Update ARIA label
+            DOMElements.verbEmoji.setAttribute('aria-label', `Visual hint for the word: ${verbData.word}`); // Update ARIA label
             
             updateScoreDisplay();
             updateUI(); // Render the letters and slots on the UI
@@ -362,7 +357,7 @@
                 // Display message directly in feedback area
                 resetFeedback();
                 const feedback = DOMElements.feedbackMessage;
-                feedback.textContent = "¡Por favor, completa la palabra!";
+                feedback.textContent = "Please complete the word!"; // Translated message
                 feedback.classList.add('text-yellow-600', 'animate-pop'); // Use a warning color
                 feedback.classList.remove('opacity-0');
                 return; // Still return to prevent further checks
@@ -392,11 +387,11 @@
             setTimeout(() => { // Small delay to allow CSS transitions to reset
                 const feedback = DOMElements.feedbackMessage;
                 if (isCorrect) {
-                    feedback.textContent = "¡Correcto!";
+                    feedback.textContent = "Correct!"; // Translated message
                     feedback.classList.add('correct', 'text-green-600'); // Green text for correct
                     playSuccessSound(); // Play success sound using Web Audio API
                 } else {
-                    feedback.textContent = "¡Inténtalo de nuevo!"; // More encouraging message
+                    feedback.textContent = "Try again!"; // Translated message
                     feedback.classList.add('incorrect', 'text-red-600'); // Red text for incorrect
                     playErrorSound(); // Play error sound using Web Audio API
                 }
@@ -441,7 +436,7 @@
             // Display final score directly in feedback area
             resetFeedback();
             const feedback = DOMElements.feedbackMessage;
-            feedback.textContent = `¡Juego Completado! Tu puntuación final es: ${score} puntos.`;
+            feedback.textContent = `Game Completed! Your final score is: ${score} points.`; // Translated message
             feedback.classList.add('text-blue-700', 'animate-pop'); // Use a completion color
             feedback.classList.remove('opacity-0');
         }
@@ -463,4 +458,4 @@
     </script>
 </body>
 </html>
-
+ELABORADO POR: MARÍA PAZ PERALTA
